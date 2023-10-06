@@ -32,6 +32,9 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* TagTrigger;
+
 public:
 	// Sets default values for this character's properties
 	ATagPlayerCharacter();
