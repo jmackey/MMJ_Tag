@@ -16,7 +16,6 @@ void ATagPlayerController::BeginPlay()
 	Super::BeginPlay();
 	for (ACameraActor* Camera : TActorRange<ACameraActor>(GetWorld()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FOUND A CAMERA!"));
 		FViewTargetTransitionParams Params;
 		Params.BlendTime = 0;
 		AActor* CameraActor = Cast<AActor>(Camera);
@@ -26,5 +25,6 @@ void ATagPlayerController::BeginPlay()
 			return;
 		}
 		SetViewTarget(CameraActor, Params);
+		break;
 	}
 }
