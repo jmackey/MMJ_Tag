@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "TagPlayerCharacter.h"
 #include "TagGameMode.generated.h"
 
 /**
@@ -13,5 +14,17 @@ UCLASS()
 class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	ATagGameMode();
+	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
+	ATagPlayerCharacter* GetItPlayer();
+
+protected:
+	void BeginPlay() override;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	ATagPlayerCharacter* ItPlayer;
 	
 };
