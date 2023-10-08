@@ -7,6 +7,8 @@
 #include "TagPlayerCharacter.h"
 #include "TagGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
+
 /**
  * 
  */
@@ -20,6 +22,8 @@ public:
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
 	UFUNCTION(BlueprintCallable)
 	ATagPlayerCharacter* GetItPlayer();
+	UFUNCTION(BlueprintCallable)
+	int GetTimeLeft();
 
 protected:
 	void BeginPlay() override;
@@ -34,5 +38,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	float CurrentCooldown;
+
+	UPROPERTY(EditDefaultsOnly)
+	int GameTime;
+
+	UPROPERTY(VisibleAnywhere)
+	bool GameOver;
+
+	UPROPERTY(BlueprintAssignable)
+	FGameOver OnGameOver;
 	
 };
