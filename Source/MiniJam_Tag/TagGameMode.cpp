@@ -9,6 +9,8 @@ ATagGameMode::ATagGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	TagCooldown = 5.f;
+	GameTime = 20;
+	GameOver = false;
 }
 
 void ATagGameMode::BeginPlay()
@@ -25,9 +27,25 @@ void ATagGameMode::BeginPlay()
 
 void ATagGameMode::Tick(float DeltaSeconds)
 {
+	if (GameOver)
+	{
+		return;
+	}
 	if (CurrentCooldown >= 0)
 	{
 		CurrentCooldown -= DeltaSeconds;
+	}
+
+	if (GetTimeLeft() > 0)
+	{
+		float NewTime = GameTime -= DeltaSeconds;
+		GameTime = FMath::CeilToInt(NewTime);
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Display, TEXT("Game Over!"));
+		OnGameOver.Broadcast();
+		GameOver = true;
 	}
 }
 
@@ -47,5 +65,10 @@ void ATagGameMode::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 ATagPlayerCharacter* ATagGameMode::GetItPlayer()
 {
 	return ItPlayer;
+}
+
+int ATagGameMode::GetTimeLeft()
+{
+	return GameTime / 100;
 }
 
