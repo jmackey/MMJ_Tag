@@ -23,9 +23,20 @@ void UBTS_ITService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (!AIController) { return; }
 
 	ATagPlayerCharacter* AICharacter = Cast<ATagPlayerCharacter>(AIController->GetPawn());
-	//bool AmIIt = GameMode->GetItPlayer() == OwnerComp.GetAIOwner();
+	if (!AICharacter) { return; }
+	bool AmIIt = GameMode->GetItPlayer() == AICharacter;
 
-	//OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), PlayerPawn);
+	//if (AmIIt) 
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
+	//	
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("I AM NOT IT!"));
+	//}
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), AmIIt);
 }

@@ -18,6 +18,7 @@ class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
 public:
 	ATagGameMode();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
+	UFUNCTION(BlueprintCallable)
 	ATagPlayerCharacter* GetItPlayer();
 
 protected:
