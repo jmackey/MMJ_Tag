@@ -7,6 +7,8 @@
 
 ATagGameMode::ATagGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	TagCooldown = 5.f;
 }
 
 void ATagGameMode::BeginPlay()
@@ -21,11 +23,25 @@ void ATagGameMode::BeginPlay()
 	SetItPlayer(ActivePlayers[FMath::RandRange(0, ActivePlayers.Num() - 1)]);
 }
 
+void ATagGameMode::Tick(float DeltaSeconds)
+{
+	if (CurrentCooldown >= 0)
+	{
+		CurrentCooldown -= DeltaSeconds;
+	}
+}
+
 
 void ATagGameMode::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 {
+	if (CurrentCooldown > 0)
+	{
+		UE_LOG(LogTemp, Display, TEXT("TAG IN COOLDOWN"));
+		return;
+	}
 	UE_LOG(LogTemp, Display, TEXT("Setting new active player - %s"), *NewItPlayer->GetName());
 	ItPlayer = NewItPlayer;
+	CurrentCooldown = TagCooldown;
 }
 
 ATagPlayerCharacter* ATagGameMode::GetItPlayer()

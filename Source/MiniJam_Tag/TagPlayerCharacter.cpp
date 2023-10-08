@@ -9,10 +9,13 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/BoxComponent.h"
+#include "TagGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
 {
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -106,7 +109,20 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 	{
 		if (Actor != this)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Overlapping with a player that is not me: %s"), *Actor->GetName());
+			ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+			if (!GameMode) { return; }
+			ATagPlayerCharacter* ITPlayer = GameMode->GetItPlayer();
+			if (!ITPlayer)
+			{
+				return;
+			}
+
+			if (ITPlayer != this) 
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
+				GameMode->SetItPlayer(this);
+			}
+
 		}
 	}
 

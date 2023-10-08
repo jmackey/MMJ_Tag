@@ -4,6 +4,7 @@
 #include "BTS_UpdatePlayerLocation.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "TagGameMode.h"
 
 UBTS_UpdatePlayerLocation::UBTS_UpdatePlayerLocation()
 {
@@ -15,12 +16,15 @@ void UBTS_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
 	// TODO: Instead of player 0, get the "IT" player
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	//APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	if (!GameMode) { return; }
+	ATagPlayerCharacter* ITPlayer = GameMode->GetItPlayer();
 
-	if (!PlayerPawn)
+	if (!ITPlayer)
 	{
 		UE_LOG(LogTemp, Error, TEXT("NO PLAYER PAWN FOUND!"));
 		return;
 	}
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), ITPlayer);
 }

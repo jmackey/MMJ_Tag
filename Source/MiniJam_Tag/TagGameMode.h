@@ -23,9 +23,16 @@ public:
 
 protected:
 	void BeginPlay() override;
+	void Tick(float DeltaSeconds) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	ATagPlayerCharacter* ItPlayer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float TagCooldown;
+
+	UPROPERTY(VisibleAnywhere)
+	float CurrentCooldown;
 	
 };

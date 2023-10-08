@@ -35,6 +35,8 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* TagTrigger;
 
+
+
 public:
 	// Sets default values for this character's properties
 	ATagPlayerCharacter();
@@ -43,7 +45,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
+	//void Look(const FInputActionValue& Value);
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 

@@ -29,14 +29,16 @@ void UBTS_ITService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	if (!AICharacter) { return; }
 	bool AmIIt = GameMode->GetItPlayer() == AICharacter;
 
-	//if (AmIIt) 
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
-	//	
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("I AM NOT IT!"));
-	//}
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), AmIIt);
+	if (AmIIt) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), AmIIt);
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I AM NOT IT!"));
+		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+	}
+
 }
