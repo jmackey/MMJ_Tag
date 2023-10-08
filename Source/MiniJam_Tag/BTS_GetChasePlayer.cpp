@@ -16,7 +16,7 @@ void UBTS_GetChasePlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	TArray<ATagPlayerCharacter*> Players;
+	//TArray<ATagPlayerCharacter*> Players;
 
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController) { return; }
@@ -25,14 +25,24 @@ void UBTS_GetChasePlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	if (!AICharacter) { return; }
 	//bool AmIIt = GameMode->GetItPlayer() == AICharacter;
 
+	float minDistance = INFINITY;
+	ATagPlayerCharacter* ClosestCharacter = 0;
 	for (ATagPlayerCharacter* Character : TActorRange<ATagPlayerCharacter>(GetWorld()))
 	{
-		// Don't Add itself to the list
+		// Don't Calc your own distance
 		if (Character != AICharacter)
 		{
-			Players.Add(Character);
+			float DistanceToPlayer = FVector::Dist(AICharacter->GetActorLocation(), Character->GetActorLocation());
+			if (DistanceToPlayer < minDistance)
+			{
+				ClosestCharacter = Character;
+				minDistance = DistanceToPlayer;
+			}
 		}
 	}
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Players[FMath::RandRange(0, Players.Num() - 1)]);
+	if (ClosestCharacter)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), ClosestCharacter);
+	}
 }
