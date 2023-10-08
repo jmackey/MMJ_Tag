@@ -117,7 +117,7 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 				return;
 			}
 
-			if (ITPlayer != this) 
+			if (ITPlayer != this && ITPlayer == Actor) 
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
 				GameMode->SetItPlayer(this);
