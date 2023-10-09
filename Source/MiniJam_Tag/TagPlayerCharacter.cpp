@@ -73,7 +73,7 @@ void ATagPlayerCharacter::BeginPlay()
 		return;
 	}
 
-	
+	GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -107,6 +107,11 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+}
+
+void ATagPlayerCharacter::TaggedPlayerChanged()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
 }
 
 // Called every frame

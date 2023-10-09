@@ -51,6 +51,9 @@ protected:
 	//void Look(const FInputActionValue& Value);
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
+private:
+	UFUNCTION()
+	void TaggedPlayerChanged();
 
 public:	
 	// Called every frame
