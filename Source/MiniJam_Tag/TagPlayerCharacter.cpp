@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "TagGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
@@ -42,6 +43,9 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	TagTrigger->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	TagTrigger->SetupAttachment(RootComponent);
 
+	ItEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IT Particles"));
+	ItEffect->SetupAttachment(RootComponent);
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//CameraBoom->SetupAttachment(RootComponent);
@@ -62,6 +66,14 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	if (!GameMode)
+	{
+		return;
+	}
+
+	
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{

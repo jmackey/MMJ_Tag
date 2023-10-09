@@ -8,6 +8,7 @@
 #include "TagGameMode.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTagPlayerChanged);
 
 /**
  * 
@@ -24,6 +25,8 @@ public:
 	ATagPlayerCharacter* GetItPlayer();
 	UFUNCTION(BlueprintCallable)
 	int GetTimeLeft();
+
+	FTagPlayerChanged OnTagPlayerChanged;
 
 protected:
 	void BeginPlay() override;
@@ -48,4 +51,5 @@ private:
 	UPROPERTY(BlueprintAssignable)
 	FGameOver OnGameOver;
 	
+
 };
