@@ -43,8 +43,9 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	TagTrigger->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	TagTrigger->SetupAttachment(RootComponent);
 
-	ItEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IT Particles"));
-	ItEffect->SetupAttachment(RootComponent);
+	ItIdentifier = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IT Identifier"));
+	ItIdentifier->SetupAttachment(RootComponent);
+	ItIdentifier->SetVisibility(true);
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -82,6 +83,8 @@ void ATagPlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	TaggedPlayerChanged();
 	
 }
 
@@ -112,6 +115,22 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 void ATagPlayerCharacter::TaggedPlayerChanged()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
+
+	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	if (!GameMode)
+	{
+		return;
+	}
+
+	if (GameMode->GetItPlayer() == this)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
+		ItIdentifier->SetVisibility(true);
+	}
+	else
+	{
+		ItIdentifier->SetVisibility(false);
+	}
 }
 
 // Called every frame

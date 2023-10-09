@@ -35,9 +35,8 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* TagTrigger;
 
-	UPROPERTY(EditDefaultsOnly)
-	class UParticleSystemComponent* ItEffect;
-
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* ItIdentifier;
 
 
 public:
