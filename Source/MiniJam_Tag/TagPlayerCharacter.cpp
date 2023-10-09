@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "TagGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
@@ -42,6 +43,10 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	TagTrigger->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	TagTrigger->SetupAttachment(RootComponent);
 
+	ItIdentifier = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IT Identifier"));
+	ItIdentifier->SetupAttachment(RootComponent);
+	ItIdentifier->SetVisibility(true);
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//CameraBoom->SetupAttachment(RootComponent);
@@ -63,6 +68,14 @@ void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	if (!GameMode)
+	{
+		return;
+	}
+
+	GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
+
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -70,6 +83,8 @@ void ATagPlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	TaggedPlayerChanged();
 	
 }
 
@@ -94,6 +109,27 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+void ATagPlayerCharacter::TaggedPlayerChanged()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
+
+	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	if (!GameMode)
+	{
+		return;
+	}
+
+	if (GameMode->GetItPlayer() == this)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
+		ItIdentifier->SetVisibility(true);
+	}
+	else
+	{
+		ItIdentifier->SetVisibility(false);
 	}
 }
 

@@ -59,6 +59,8 @@ void ATagGameMode::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 	}
 	UE_LOG(LogTemp, Display, TEXT("Setting new active player - %s"), *NewItPlayer->GetName());
 	ItPlayer = NewItPlayer;
+	// TODO: Broadcast that a new player is IT
+	OnTagPlayerChanged.Broadcast();
 	CurrentCooldown = TagCooldown;
 }
 

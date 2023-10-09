@@ -35,6 +35,8 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* TagTrigger;
 
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* ItIdentifier;
 
 
 public:
@@ -48,6 +50,9 @@ protected:
 	//void Look(const FInputActionValue& Value);
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
+private:
+	UFUNCTION()
+	void TaggedPlayerChanged();
 
 public:	
 	// Called every frame

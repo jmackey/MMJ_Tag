@@ -35,6 +35,6 @@ void UBTT_MoveAway::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 	}
 
 	FVector MoveDirection = AIPawn->GetActorLocation() - ItPawn->GetActorLocation();
-	OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), MoveDirection);
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), MoveDirection + FVector(4.f, 4.f, 0.f));
 }
 
