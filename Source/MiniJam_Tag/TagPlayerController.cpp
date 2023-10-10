@@ -11,11 +11,16 @@ ATagPlayerController::ATagPlayerController()
 
 }
 
+
 void ATagPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	for (ACameraActor* Camera : TActorRange<ACameraActor>(GetWorld()))
 	{
+		if (!Camera->ActorHasTag("LevelCamera"))
+		{
+			continue;
+		}
 		FViewTargetTransitionParams Params;
 		Params.BlendTime = 0;
 		AActor* CameraActor = Cast<AActor>(Camera);

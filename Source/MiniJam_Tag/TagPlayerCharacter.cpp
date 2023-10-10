@@ -67,7 +67,10 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (!HasAuthority())
+	{
+		return;
+	}
 	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
 	if (!GameMode)
 	{
@@ -83,7 +86,6 @@ void ATagPlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
 	TaggedPlayerChanged();
 	
 }
@@ -139,7 +141,6 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	TArray<AActor*> OverlappingActors;
-
 	TagTrigger->GetOverlappingActors(OverlappingActors, ATagPlayerCharacter::StaticClass());
 	for (AActor* Actor : OverlappingActors)
 	{
@@ -158,10 +159,8 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
 				GameMode->SetItPlayer(this);
 			}
-
 		}
 	}
-
 }
 
 // Called to bind functionality to input

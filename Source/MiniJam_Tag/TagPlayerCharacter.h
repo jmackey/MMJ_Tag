@@ -37,6 +37,8 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* ItIdentifier;
+	UPROPERTY(EditAnywhere)
+	bool AmIIT;
 
 
 public:
