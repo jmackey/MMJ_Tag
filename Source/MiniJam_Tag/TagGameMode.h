@@ -27,6 +27,8 @@ public:
 	int GetTimeLeft();
 
 	FTagPlayerChanged OnTagPlayerChanged;
+	FGameOver OnGameOver;
+
 
 protected:
 	void BeginPlay() override;
@@ -48,8 +50,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	bool GameOver;
 
-	UPROPERTY(BlueprintAssignable)
-	FGameOver OnGameOver;
-	
+
 
 };

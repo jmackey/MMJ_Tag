@@ -63,6 +63,8 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+
+
 // Called when the game starts or when spawned
 void ATagPlayerCharacter::BeginPlay()
 {
