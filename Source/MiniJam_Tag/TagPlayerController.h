@@ -27,8 +27,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> HUDClass;
 
-	UFUNCTION()
-	void GameOver();
+	//UFUNCTION()
+	//void GameOver();
 
 
 	UUserWidget* HUD;

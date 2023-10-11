@@ -21,39 +21,11 @@ class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
 public:
 	ATagGameMode();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
-	//UFUNCTION(BlueprintCallable)
-	//ATagPlayerCharacter* GetItPlayer();
-	UFUNCTION(BlueprintCallable)
-	int GetTimeLeft();
-
-	float GetTagCooldown() { return TagCooldown; }
-
-	FTagPlayerChanged OnTagPlayerChanged;
-
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPCITPlayerUpdated(ATagPlayerCharacter* CurrentItPlayer);
-
 
 protected:
 	void BeginPlay() override;
-	void Tick(float DeltaSeconds) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	ATagPlayerCharacter* ItPlayer;
-
-	UPROPERTY(EditDefaultsOnly)
-	float TagCooldown;
-
-	UPROPERTY(VisibleAnywhere)
-	float CurrentCooldown;
-
-
-
-	UPROPERTY(VisibleAnywhere)
 	bool GameOver;
-
-
-
 };

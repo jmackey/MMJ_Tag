@@ -60,10 +60,9 @@ void ATagPlayerController::BeginPlay()
 	//}
 }
 
-void ATagPlayerController::GameOver()
-{
-	HUD->RemoveFromViewport();
-
-}
+//void ATagPlayerController::GameOver()
+//{
+//	HUD->RemoveFromViewport();
+//}
 
 

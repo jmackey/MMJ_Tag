@@ -10,23 +10,8 @@
 ATagGameMode::ATagGameMode()
 {
 	//PrimaryActorTick.bCanEverTick = true;
-	TagCooldown = 5.f;
 	//GameTime = 20;
 	GameOver = false;
-}
-
-void ATagGameMode::MulticastRPCITPlayerUpdated_Implementation(ATagPlayerCharacter* NewItPlayer)
-{
-	if (!HasAuthority()) 
-	{
-		UE_LOG(LogTemp, Error, TEXT("Does this get called on the client? %s"), *NewItPlayer->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Does this get called on the server? %s"), *NewItPlayer->GetName());
-
-	}
-
 }
 
 void ATagGameMode::BeginPlay()
@@ -42,55 +27,12 @@ void ATagGameMode::BeginPlay()
 	SetItPlayer(ActivePlayers[FMath::RandRange(0, ActivePlayers.Num() - 1)]);
 }
 
-void ATagGameMode::Tick(float DeltaSeconds)
-{
-	//if (!HasAuthority()) { return; }
-	//if (GameOver)
-	//{
-	//	return;
-	//}
-	//if (CurrentCooldown >= 0)
-	//{
-	//	CurrentCooldown -= DeltaSeconds;
-	//}
-
-	//if (GetTimeLeft() > 0)
-	//{
-	//	float NewTime = GameTime -= DeltaSeconds;
-	//	GameTime = FMath::CeilToInt(NewTime);
-
-	//}
-	//else
-	//{
-	//	//UE_LOG(LogTemp, Display, TEXT("Game Over!"));
-	//	OnGameOver.Broadcast();
-	//	GameOver = true;
-	//}
-}
-
-
 void ATagGameMode::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 {
 	if (!HasAuthority()) { return; }
-	if (CurrentCooldown > 0)
-	{
-		//UE_LOG(LogTemp, Display, TEXT("TAG IN COOLDOWN"));
-		return;
-	}
+
 	UE_LOG(LogTemp, Display, TEXT("Setting new active player - %s"), *NewItPlayer->GetName());
 	ATagGameState* TagGameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
 	if (!TagGameState) { return; }
 	TagGameState->SetItPlayer(NewItPlayer);
-	CurrentCooldown = TagCooldown;
 }
-
-//ATagPlayerCharacter* ATagGameMode::GetItPlayer()
-//{
-//	return ItPlayer;
-//}
-
-int ATagGameMode::GetTimeLeft()
-{
-	return 100 / 100;
-}
-

@@ -47,43 +47,7 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	ItIdentifier = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IT Identifier"));
 	ItIdentifier->SetupAttachment(RootComponent);
 	ItIdentifier->SetVisibility(true);
-
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	//CameraBoom->SetupAttachment(RootComponent);
-	//CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
-
-	// Create a follow camera
-	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	//FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
-
-//void ATagPlayerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//
-//	DOREPLIFETIME(ATagPlayerCharacter, AmIIt);
-//}
-//
-//void ATagPlayerCharacter::OnRep_AmIIt()
-//{
-//	if (AmIIt)
-//	{
-//		ItIdentifier->SetVisibility(true);
-//	}
-//	else
-//	{
-//		ItIdentifier->SetVisibility(false);
-//	}
-//}
-
-
 
 // Called when the game starts or when spawned
 void ATagPlayerCharacter::BeginPlay()
@@ -96,16 +60,7 @@ void ATagPlayerCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-	}
-
-	//if (!HasAuthority())
-	//{
-	//	return;
-	//}
-
-	//GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
-	//TaggedPlayerChanged();
-	
+	}	
 }
 
 
@@ -131,26 +86,6 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
-
-//void ATagPlayerCharacter::TaggedPlayerChanged()
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
-//
-//	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-//	if (!GameMode)
-//	{
-//		return;
-//	}
-//
-//	if (GameMode->GetItPlayer() == this)
-//	{
-//		AmIIt = true;
-//	}
-//	else
-//	{
-//		AmIIt = false;
-//	}
-//}
 
 // Called every frame
 void ATagPlayerCharacter::Tick(float DeltaTime)
@@ -188,17 +123,9 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 				UE_LOG(LogTemp, Error, TEXT("NO IT PLAYER RETURNED!"))
 				return;
 			}
-			//UE_LOG(LogTemp, Error, TEXT("IT PLAYER IS: %s"), *ITPlayer->GetActorNameOrLabel())
 
 			if (ITPlayer != this && ITPlayer == Actor) 
 			{
-				//UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
-
-				/*if (GameMode->GetTagCooldown() <= 0)
-				{*/
-				//GameMode->SetItPlayer(this);
-				//MulticastRPCTagUpdate(this);
-				//}
 				GameState->SetItPlayer(this);
 			}
 		}

@@ -15,9 +15,12 @@ void ATagGameState::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (!HasAuthority()) 
 	{ 
+		// TODO: This should actually be a client RPC
+		if (GameOver) { return; }
 		if (GameTime <= 0)
 		{
 			OnGameOver.Broadcast();
+			GameOver = true;
 		}
 		return; 
 	}
