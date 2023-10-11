@@ -9,9 +9,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/BoxComponent.h"
-#include "TagGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "TagGameState.h"
 
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
@@ -63,23 +64,31 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+//void ATagPlayerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//
+//	DOREPLIFETIME(ATagPlayerCharacter, AmIIt);
+//}
+//
+//void ATagPlayerCharacter::OnRep_AmIIt()
+//{
+//	if (AmIIt)
+//	{
+//		ItIdentifier->SetVisibility(true);
+//	}
+//	else
+//	{
+//		ItIdentifier->SetVisibility(false);
+//	}
+//}
+
 
 
 // Called when the game starts or when spawned
 void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!HasAuthority())
-	{
-		return;
-	}
-	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-	if (!GameMode)
-	{
-		return;
-	}
-
-	GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -88,7 +97,14 @@ void ATagPlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	TaggedPlayerChanged();
+
+	//if (!HasAuthority())
+	//{
+	//	return;
+	//}
+
+	//GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
+	//TaggedPlayerChanged();
 	
 }
 
@@ -116,50 +132,59 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ATagPlayerCharacter::TaggedPlayerChanged()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
-
-	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-	if (!GameMode)
-	{
-		return;
-	}
-
-	if (GameMode->GetItPlayer() == this)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
-		ItIdentifier->SetVisibility(true);
-	}
-	else
-	{
-		ItIdentifier->SetVisibility(false);
-	}
-}
+//void ATagPlayerCharacter::TaggedPlayerChanged()
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
+//
+//	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+//	if (!GameMode)
+//	{
+//		return;
+//	}
+//
+//	if (GameMode->GetItPlayer() == this)
+//	{
+//		AmIIt = true;
+//	}
+//	else
+//	{
+//		AmIIt = false;
+//	}
+//}
 
 // Called every frame
 void ATagPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!HasAuthority()) { return; }
 	TArray<AActor*> OverlappingActors;
 	TagTrigger->GetOverlappingActors(OverlappingActors, ATagPlayerCharacter::StaticClass());
 	for (AActor* Actor : OverlappingActors)
 	{
 		if (Actor != this)
 		{
-			ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-			if (!GameMode) { return; }
-			ATagPlayerCharacter* ITPlayer = GameMode->GetItPlayer();
+			ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameMode(this));
+			if (!GameState) { return; }
+			ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
+
 			if (!ITPlayer)
 			{
+				UE_LOG(LogTemp, Error, TEXT("NO IT PLAYER RETURNED!"))
 				return;
 			}
+			UE_LOG(LogTemp, Error, TEXT("IT PLAYER IS: %s"), *ITPlayer->GetActorNameOrLabel())
 
 			if (ITPlayer != this && ITPlayer == Actor) 
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
-				GameMode->SetItPlayer(this);
+
+				/*if (GameMode->GetTagCooldown() <= 0)
+				{*/
+				//GameMode->SetItPlayer(this);
+				//MulticastRPCTagUpdate(this);
+				//}
+				GameState->SetItPlayer(this);
 			}
 		}
 	}
@@ -178,5 +203,10 @@ void ATagPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ATagPlayerCharacter::MulticastRPCTagUpdate_Implementation(ATagPlayerCharacter* ItPlayer)
+{
+	UE_LOG(LogTemp, Error, TEXT("CLIENT RPC IS CALLED"));
 }
 

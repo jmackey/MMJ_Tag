@@ -21,13 +21,18 @@ class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
 public:
 	ATagGameMode();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
-	UFUNCTION(BlueprintCallable)
-	ATagPlayerCharacter* GetItPlayer();
+	//UFUNCTION(BlueprintCallable)
+	//ATagPlayerCharacter* GetItPlayer();
 	UFUNCTION(BlueprintCallable)
 	int GetTimeLeft();
 
+	float GetTagCooldown() { return TagCooldown; }
+
 	FTagPlayerChanged OnTagPlayerChanged;
 	FGameOver OnGameOver;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPCITPlayerUpdated(ATagPlayerCharacter* CurrentItPlayer);
 
 
 protected:
