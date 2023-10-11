@@ -7,7 +7,7 @@
 #include "TagPlayerCharacter.h"
 #include "TagGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTagPlayerChanged);
 
 /**
@@ -21,35 +21,11 @@ class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
 public:
 	ATagGameMode();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
-	UFUNCTION(BlueprintCallable)
-	ATagPlayerCharacter* GetItPlayer();
-	UFUNCTION(BlueprintCallable)
-	int GetTimeLeft();
-
-	FTagPlayerChanged OnTagPlayerChanged;
 
 protected:
 	void BeginPlay() override;
-	void Tick(float DeltaSeconds) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	ATagPlayerCharacter* ItPlayer;
-
-	UPROPERTY(EditDefaultsOnly)
-	float TagCooldown;
-
-	UPROPERTY(VisibleAnywhere)
-	float CurrentCooldown;
-
-	UPROPERTY(EditDefaultsOnly)
-	int GameTime;
-
-	UPROPERTY(VisibleAnywhere)
 	bool GameOver;
-
-	UPROPERTY(BlueprintAssignable)
-	FGameOver OnGameOver;
-	
-
 };

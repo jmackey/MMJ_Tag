@@ -18,8 +18,19 @@ class MINIJAM_TAG_API ATagPlayerController : public APlayerController
 public:
 	UPROPERTY(EditAnywhere)
 	class ACameraActor* LevelCamera;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+private:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> HUDClass;
+
+	//UFUNCTION()
+	//void GameOver();
+
+
+	UUserWidget* HUD;
+
 };

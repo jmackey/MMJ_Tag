@@ -39,9 +39,16 @@ class MINIJAM_TAG_API ATagPlayerCharacter : public ACharacter
 	class UStaticMeshComponent* ItIdentifier;
 
 
+
 public:
 	// Sets default values for this character's properties
 	ATagPlayerCharacter();
+	//void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//UPROPERTY(ReplicatedUsing = OnRep_AmIIt, BlueprintReadWrite, VisibleAnywhere)
+	//bool AmIIt;
+
+	//UFUNCTION()
+	//void OnRep_AmIIt();
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,9 +57,9 @@ protected:
 	//void Look(const FInputActionValue& Value);
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-private:
-	UFUNCTION()
-	void TaggedPlayerChanged();
+//private:
+//	UFUNCTION()
+//	void TaggedPlayerChanged();
 
 public:	
 	// Called every frame
@@ -63,5 +70,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPCTagUpdate(ATagPlayerCharacter* ItPlayer);
 
 };

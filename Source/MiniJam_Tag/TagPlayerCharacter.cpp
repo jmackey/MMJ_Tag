@@ -9,9 +9,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/BoxComponent.h"
-#include "TagGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "TagGameState.h"
 
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
@@ -46,21 +47,6 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 	ItIdentifier = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IT Identifier"));
 	ItIdentifier->SetupAttachment(RootComponent);
 	ItIdentifier->SetVisibility(true);
-
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	//CameraBoom->SetupAttachment(RootComponent);
-	//CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
-
-	// Create a follow camera
-	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	//FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	//FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 // Called when the game starts or when spawned
@@ -68,24 +54,13 @@ void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-	if (!GameMode)
-	{
-		return;
-	}
-
-	GameMode->OnTagPlayerChanged.AddDynamic(this, &ATagPlayerCharacter::TaggedPlayerChanged);
-
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-	}
-
-	TaggedPlayerChanged();
-	
+	}	
 }
 
 
@@ -112,56 +87,49 @@ void ATagPlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ATagPlayerCharacter::TaggedPlayerChanged()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TaggedPlayerChanged called on player!"));
-
-	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-	if (!GameMode)
-	{
-		return;
-	}
-
-	if (GameMode->GetItPlayer() == this)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("I AM IT!"));
-		ItIdentifier->SetVisibility(true);
-	}
-	else
-	{
-		ItIdentifier->SetVisibility(false);
-	}
-}
-
 // Called every frame
 void ATagPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!HasAuthority()) 
+	{ 
+		ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
+		if (!GameState) { return; }
+		ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
+		// TODO: This is not efficient to do every tick but good enough for now
+		if (ITPlayer != this)
+		{
+			ItIdentifier->SetVisibility(false);
+		}
+		else
+		{
+			ItIdentifier->SetVisibility(true);
+		}
+		return; 
+	}
 	TArray<AActor*> OverlappingActors;
-
 	TagTrigger->GetOverlappingActors(OverlappingActors, ATagPlayerCharacter::StaticClass());
 	for (AActor* Actor : OverlappingActors)
 	{
 		if (Actor != this)
 		{
-			ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-			if (!GameMode) { return; }
-			ATagPlayerCharacter* ITPlayer = GameMode->GetItPlayer();
+			ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
+			if (!GameState) { return; }
+			ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
+
 			if (!ITPlayer)
 			{
+				UE_LOG(LogTemp, Error, TEXT("NO IT PLAYER RETURNED!"))
 				return;
 			}
 
 			if (ITPlayer != this && ITPlayer == Actor) 
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
-				GameMode->SetItPlayer(this);
+				GameState->SetItPlayer(this);
 			}
-
 		}
 	}
-
 }
 
 // Called to bind functionality to input
@@ -177,5 +145,10 @@ void ATagPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ATagPlayerCharacter::MulticastRPCTagUpdate_Implementation(ATagPlayerCharacter* ItPlayer)
+{
+	UE_LOG(LogTemp, Error, TEXT("CLIENT RPC IS CALLED"));
 }
 
