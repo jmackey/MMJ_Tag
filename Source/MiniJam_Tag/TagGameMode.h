@@ -3,29 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "TagPlayerCharacter.h"
 #include "TagGameMode.generated.h"
-
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTagPlayerChanged);
 
 /**
  * 
  */
 UCLASS()
-class MINIJAM_TAG_API ATagGameMode : public AGameModeBase
+class MINIJAM_TAG_API ATagGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
 	ATagGameMode();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
+	void PostLogin(APlayerController* NewPlayer) override;
 
 protected:
 	void BeginPlay() override;
+	void HandleMatchIsWaitingToStart() override;
+	void HandleMatchHasStarted() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool GameOver;
+	TArray<APlayerController*> ConnectedPlayers;
 };

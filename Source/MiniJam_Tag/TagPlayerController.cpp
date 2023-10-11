@@ -18,46 +18,47 @@ ATagPlayerController::ATagPlayerController()
 void ATagPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	/*if (!HasAuthority()) 
-	{
-		return;
-	}
-	
-	HUD = CreateWidget(this, HUDClass);
-	if (!HUD)
-	{
-		return;
-
-	}
-	HUD->AddToViewport();
-
-	ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
-	if (!GameMode)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Game Mode!"));
-		return;
-	}
-
-	GameMode->OnGameOver.AddDynamic(this, &ATagPlayerController::GameOver);*/
-
-	//for (ACameraActor* Camera : TActorRange<ACameraActor>(GetWorld()))
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::White, TEXT("Player Controller: BEGIN PLAY!"));
+	//if (!HasAuthority()) 
 	//{
-	//	if (!Camera->ActorHasTag("LevelCamera"))
-	//	{
-	//		continue;
-	//	}
-	//	UE_LOG(LogTemp, Warning, TEXT("Found a camera!"));
-	//	FViewTargetTransitionParams Params;
-	//	Params.BlendTime = 0;
-	//	AActor* CameraActor = Cast<AActor>(Camera);
-	//	if (!CameraActor)
-	//	{
-	//		UE_LOG(LogTemp, Error, TEXT("Camera can't be cast to actor!"));
-	//		return;
-	//	}
-	//	SetViewTarget(CameraActor, Params);
-	//	break;
+	//	return;
 	//}
+	//
+	//HUD = CreateWidget(this, HUDClass);
+	//if (!HUD)
+	//{
+	//	return;
+
+	//}
+	//HUD->AddToViewport();
+
+	//ATagGameMode* GameMode = Cast<ATagGameMode>(UGameplayStatics::GetGameMode(this));
+	//if (!GameMode)
+	//{
+	//	UE_LOG(LogTemp, Error, TEXT("No Game Mode!"));
+	//	return;
+	//}
+
+	////GameMode->OnGameOver.AddDynamic(this, &ATagPlayerController::GameOver);
+
+	/*for (ACameraActor* Camera : TActorRange<ACameraActor>(GetWorld()))
+	{
+		if (!Camera->ActorHasTag("LevelCamera"))
+		{
+			continue;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Found a camera!"));
+		FViewTargetTransitionParams Params;
+		Params.BlendTime = 0;
+		AActor* CameraActor = Cast<AActor>(Camera);
+		if (!CameraActor)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Camera can't be cast to actor!"));
+			return;
+		}
+		SetViewTarget(CameraActor, Params);
+		break;
+	}*/
 }
 
 //void ATagPlayerController::GameOver()

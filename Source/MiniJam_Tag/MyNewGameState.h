@@ -4,51 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
-#include "TagGameState.generated.h"
+#include "TagPlayerCharacter.h"
+#include "MyNewGameState.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
-
-class ATagPlayerCharacter;
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
 /**
  * 
  */
 UCLASS()
-class MINIJAM_TAG_API ATagGameState : public AGameState
+class MINIJAM_TAG_API AMyNewGameState : public AGameState
 {
 	GENERATED_BODY()
-
 public:
-	ATagGameState();
-
+	AMyNewGameState();
 	void SetItPlayer(ATagPlayerCharacter* NewItPlayer);
-	UFUNCTION(BlueprintCallable)
-	ATagPlayerCharacter* GetItPlayer() const;
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UPROPERTY(BlueprintAssignable)
+	FGameOver OnGameOver;
+
+	UPROPERTY(ReplicatedUsing = OnRep_GameTime, BlueprintReadWrite, EditAnywhere)
+	int GameTime;
+
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentITPlayer, BlueprintReadWrite, VisibleAnywhere)
 	ATagPlayerCharacter* CurrentlyITPlayer;
 
 	UFUNCTION()
 	void OnRep_CurrentITPlayer();
 
-	//UPROPERTY(BlueprintAssignable)
-	//FGameOver OnGameOver;
-
-	UPROPERTY(ReplicatedUsing = OnRep_GameTime, BlueprintReadWrite, EditAnywhere)
-	int GameTime;
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION()
 	void OnRep_GameTime();
-
 protected:
-	UPROPERTY(EditAnywhere)
-	float TagCoolDown = 5.f;
-	//void HandleMatchIsWaitingToStart() override;
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
 private:
+	float TagCoolDown = 5.f;
 	float CurrentCooldown = 0.f;
 	UPROPERTY(VisibleAnywhere)
 	ATagPlayerCharacter* ItPlayer = 0;
