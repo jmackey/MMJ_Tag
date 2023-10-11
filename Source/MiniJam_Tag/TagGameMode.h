@@ -7,7 +7,7 @@
 #include "TagPlayerCharacter.h"
 #include "TagGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOver);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTagPlayerChanged);
 
 /**
@@ -29,7 +29,7 @@ public:
 	float GetTagCooldown() { return TagCooldown; }
 
 	FTagPlayerChanged OnTagPlayerChanged;
-	FGameOver OnGameOver;
+
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPCITPlayerUpdated(ATagPlayerCharacter* CurrentItPlayer);
@@ -49,8 +49,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	float CurrentCooldown;
 
-	UPROPERTY(EditDefaultsOnly)
-	int GameTime;
+
 
 	UPROPERTY(VisibleAnywhere)
 	bool GameOver;

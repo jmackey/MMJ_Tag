@@ -2,15 +2,37 @@
 
 
 #include "TagGameState.h"
+#include "Net/UnrealNetwork.h"
 
 ATagGameState::ATagGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	GameTime = 60;
 }
 
 void ATagGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!HasAuthority()) 
+	{ 
+		if (GameTime <= 0)
+		{
+			OnGameOver.Broadcast();
+		}
+		return; 
+	}
+	if (GameOver) { return; }
+
+	if (GameTime > 0)
+	{
+		float NewTime = GameTime -= DeltaTime;
+		GameTime = FMath::CeilToInt(NewTime);
+	}
+	else 
+	{
+		GameOver = true;
+		OnGameOver.Broadcast();
+	}
 
 	if (CurrentCooldown > 0)
 	{
@@ -24,6 +46,8 @@ void ATagGameState::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 	if (CurrentCooldown <= 0)
 	{
 		ItPlayer = NewItPlayer;
+		CurrentlyITPlayer = NewItPlayer;
+		OnRep_CurrentITPlayer();
 		CurrentCooldown = TagCoolDown;
 		UE_LOG(LogTemp, Warning, TEXT("GameState: Setting new IT Player"));
 	}
@@ -31,5 +55,30 @@ void ATagGameState::SetItPlayer(ATagPlayerCharacter* NewItPlayer)
 
 ATagPlayerCharacter* ATagGameState::GetItPlayer() const
 {
-	return ItPlayer;
+	return CurrentlyITPlayer;
+}
+
+void ATagGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ATagGameState, CurrentlyITPlayer);
+	DOREPLIFETIME(ATagGameState, GameTime);
+
+}
+
+void ATagGameState::OnRep_CurrentITPlayer()
+{
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Error, TEXT("SERVER: CurrentITPlayer Updated"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("CLIENT: CurrentITPlayer Updated"));
+	}
+}
+
+void ATagGameState::OnRep_GameTime()
+{
 }

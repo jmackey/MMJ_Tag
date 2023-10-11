@@ -157,14 +157,29 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!HasAuthority()) { return; }
+	if (!HasAuthority()) 
+	{ 
+		ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
+		if (!GameState) { return; }
+		ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
+		// TODO: This is not efficient to do every tick but good enough for now
+		if (ITPlayer != this)
+		{
+			ItIdentifier->SetVisibility(false);
+		}
+		else
+		{
+			ItIdentifier->SetVisibility(true);
+		}
+		return; 
+	}
 	TArray<AActor*> OverlappingActors;
 	TagTrigger->GetOverlappingActors(OverlappingActors, ATagPlayerCharacter::StaticClass());
 	for (AActor* Actor : OverlappingActors)
 	{
 		if (Actor != this)
 		{
-			ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameMode(this));
+			ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
 			if (!GameState) { return; }
 			ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
 
@@ -173,11 +188,11 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 				UE_LOG(LogTemp, Error, TEXT("NO IT PLAYER RETURNED!"))
 				return;
 			}
-			UE_LOG(LogTemp, Error, TEXT("IT PLAYER IS: %s"), *ITPlayer->GetActorNameOrLabel())
+			//UE_LOG(LogTemp, Error, TEXT("IT PLAYER IS: %s"), *ITPlayer->GetActorNameOrLabel())
 
 			if (ITPlayer != this && ITPlayer == Actor) 
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
+				//UE_LOG(LogTemp, Warning, TEXT("Someone Tagged me!: %s"), *Actor->GetName());
 
 				/*if (GameMode->GetTagCooldown() <= 0)
 				{*/
