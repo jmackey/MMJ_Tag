@@ -18,4 +18,5 @@ void ATagAIController::BeginPlay()
 
 void ATagAIController::Tick(float DeltaTime)
 {
+
 }

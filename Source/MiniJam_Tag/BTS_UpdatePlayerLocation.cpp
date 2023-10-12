@@ -4,7 +4,7 @@
 #include "BTS_UpdatePlayerLocation.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "TagGameState.h"
+#include "MyNewGameState.h"
 #include "TagPlayerCharacter.h"
 
 UBTS_UpdatePlayerLocation::UBTS_UpdatePlayerLocation()
@@ -18,7 +18,7 @@ void UBTS_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 	// TODO: Instead of player 0, get the "IT" player
 	//APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	ATagGameState* TagGameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
+	AMyNewGameState* TagGameState = Cast<AMyNewGameState>(UGameplayStatics::GetGameState(this));
 	if (!TagGameState) { return; }
 	ATagPlayerCharacter* ITPlayer = TagGameState->GetItPlayer();
 

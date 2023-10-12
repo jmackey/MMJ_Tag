@@ -36,8 +36,14 @@ void AMyNewGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AMyNewGameState, GameTime);
 }
 
+ATagPlayerCharacter* AMyNewGameState::GetItPlayer()
+{
+	return CurrentlyITPlayer;
+}
+
 void AMyNewGameState::OnRep_GameTime()
 {
+	
 }
 
 void AMyNewGameState::BeginPlay()
@@ -50,6 +56,7 @@ void AMyNewGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("GameState: Tick!"));
+	if (!IsMatchInProgress()) { return; }
 	if (!HasAuthority())
 	{
 		// TODO: This should actually be a client RPC

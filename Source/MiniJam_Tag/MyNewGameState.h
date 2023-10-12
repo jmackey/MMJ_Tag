@@ -33,6 +33,8 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	ATagPlayerCharacter* GetItPlayer();
+
 	UFUNCTION()
 	void OnRep_GameTime();
 protected:
