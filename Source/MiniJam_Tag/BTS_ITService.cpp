@@ -4,7 +4,7 @@
 #include "BTS_ITService.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "TagGameState.h"
+#include "MyNewGameState.h"
 #include "AIController.h"
 #include "TagPlayerCharacter.h"
 
@@ -17,7 +17,7 @@ UBTS_ITService::UBTS_ITService()
 void UBTS_ITService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	ATagGameState* TagGameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
+	AMyNewGameState* TagGameState = Cast<AMyNewGameState>(UGameplayStatics::GetGameState(this));
 	if (!TagGameState)
 	{
 		return;

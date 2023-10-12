@@ -12,8 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "TagGameState.h"
-
+#include "MyNewGameState.h"
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
 {
@@ -92,32 +91,27 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!HasAuthority()) 
-	{ 
-		ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
-		if (!GameState) { return; }
-		ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
-		// TODO: This is not efficient to do every tick but good enough for now
-		if (ITPlayer != this)
-		{
-			ItIdentifier->SetVisibility(false);
-		}
-		else
-		{
-			ItIdentifier->SetVisibility(true);
-		}
-		return; 
+	
+	AMyNewGameState* GameState = Cast<AMyNewGameState>(UGameplayStatics::GetGameState(this));
+	if (!GameState) { return; }
+	ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
+	// TODO: This is not efficient to do every tick but good enough for now
+	if (ITPlayer != this)
+	{
+		ItIdentifier->SetVisibility(false);
 	}
+	else
+	{
+		ItIdentifier->SetVisibility(true);
+	}
+	//return; 
+	
 	TArray<AActor*> OverlappingActors;
 	TagTrigger->GetOverlappingActors(OverlappingActors, ATagPlayerCharacter::StaticClass());
 	for (AActor* Actor : OverlappingActors)
 	{
 		if (Actor != this)
 		{
-			ATagGameState* GameState = Cast<ATagGameState>(UGameplayStatics::GetGameState(this));
-			if (!GameState) { return; }
-			ATagPlayerCharacter* ITPlayer = GameState->GetItPlayer();
-
 			if (!ITPlayer)
 			{
 				UE_LOG(LogTemp, Error, TEXT("NO IT PLAYER RETURNED!"))

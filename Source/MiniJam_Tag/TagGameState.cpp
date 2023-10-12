@@ -3,23 +3,28 @@
 
 #include "TagGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
+#include "TagGameMode.h"
 
 ATagGameState::ATagGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	GameOver = false;
 	GameTime = 60;
 }
 
 void ATagGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT("GameState: Ticking"));
 	if (!HasAuthority()) 
 	{ 
 		// TODO: This should actually be a client RPC
 		if (GameOver) { return; }
 		if (GameTime <= 0)
 		{
-			OnGameOver.Broadcast();
+			//OnGameOver.Broadcast();
 			GameOver = true;
 		}
 		return; 
@@ -34,7 +39,7 @@ void ATagGameState::Tick(float DeltaTime)
 	else 
 	{
 		GameOver = true;
-		OnGameOver.Broadcast();
+		//OnGameOver.Broadcast();
 	}
 
 	if (CurrentCooldown > 0)
@@ -84,4 +89,15 @@ void ATagGameState::OnRep_CurrentITPlayer()
 
 void ATagGameState::OnRep_GameTime()
 {
+}
+
+//void ATagGameState::HandleMatchIsWaitingToStart()
+//{
+//	Super::HandleMatchIsWaitingToStart();
+//}
+
+void ATagGameState::BeginPlay()
+{
+	Super::BeginPlay();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("GameState: BEGIN PLAY!"));
 }
