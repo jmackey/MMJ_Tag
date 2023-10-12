@@ -52,14 +52,24 @@ ATagPlayerCharacter::ATagPlayerCharacter()
 void ATagPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	AController* ThisController;
+	if (HasAuthority())
 	{
+		ThisController = GetWorld()->GetFirstPlayerController();
+	}
+	else
+	{
+		ThisController = Controller;
+	}
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(ThisController))
+	{
+
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-	}	
+	}
 }
 
 
