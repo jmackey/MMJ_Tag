@@ -13,6 +13,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "MyNewGameState.h"
+#include "TagPlayerState.h"
 // Sets default values
 ATagPlayerCharacter::ATagPlayerCharacter()
 {
@@ -56,10 +57,21 @@ void ATagPlayerCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		ThisController = GetWorld()->GetFirstPlayerController();
+		
+
 	}
 	else
 	{
 		ThisController = Controller;
+		ATagPlayerState* ThisPlayerState = Cast<ATagPlayerState>(GetPlayerState());
+		if (ThisPlayerState)
+		{
+			ThisPlayerState->SetPlayerName(TEXT("Client"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("NO PLAYER STATE!"));
+		}
 	}
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(ThisController))
@@ -101,6 +113,15 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	ATagPlayerState* ThisPlayerState = Cast<ATagPlayerState>(GetPlayerState());
+	if (ThisPlayerState)
+	{
+		ThisPlayerState->SetPlayerName(TEXT("NewPlayerName"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("NO PLAYER STATE!"));
+	}
 	
 	AMyNewGameState* GameState = Cast<AMyNewGameState>(UGameplayStatics::GetGameState(this));
 	if (!GameState) { return; }
