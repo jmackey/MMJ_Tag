@@ -1,0 +1,1 @@
+"F:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" "F:\UnrealProjects\MMJ_Tag\MiniJam_Tag.uproject" -game -ResX=960 -ResY=540 -log -WINDOWED

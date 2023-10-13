@@ -20,7 +20,7 @@ UMultiplayerSubsystem::UMultiplayerSubsystem()
 	CreateServerAfterDestroy = false;
 	DestroyServerName = "";
 	ServerNameToFind = "";
-	MySessionName = FName("Co-Op Adventure Session Name");
+	MySessionName = FName("MMJ_Tag");
 }
 
 void UMultiplayerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -69,6 +69,8 @@ void UMultiplayerSubsystem::CreateServer(FString ServerName)
 		SessionInterface->DestroySession(MySessionName);
 		return;
 	}
+
+	// TODO: Populate these with UI Widgets
 	FOnlineSessionSettings SessionSettings;
 
 	SessionSettings.bAllowJoinInProgress = true;
@@ -121,7 +123,7 @@ void UMultiplayerSubsystem::OnCreateSessionComplete(FName SessionName, bool bWas
 	ServerCreateDel.Broadcast(bWasSuccesful);
 	if (bWasSuccesful)
 	{
-		FString Path = "/Game/ThirdPerson/Maps/ThirdPersonMap?listen";
+		FString Path = "/Game/Maps/Level1?listen";
 		if (!InitialMapName.IsEmpty())
 		{
 			Path = FString::Printf(TEXT("%s?listen"), *InitialMapName);
@@ -158,6 +160,7 @@ void UMultiplayerSubsystem::OnFindSessionComplete(bool bWasSuccessful)
 	{
 		FString Msg = FString::Printf(TEXT("%d sessions found."), Results.Num());
 		PrintString(Msg);
+		//TODO: Print out all the data in result to see whats in there
 		for (FOnlineSessionSearchResult Result : Results)
 		{
 			if (Result.IsValid())
@@ -203,6 +206,7 @@ void UMultiplayerSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSess
 		FString Msg = FString::Printf(TEXT("Successfully joined Session: %s"), *SessionName.ToString());
 		PrintString(Msg);
 		FString Address = "";
+
 		bool Success = SessionInterface->GetResolvedConnectString(SessionName, Address);
 		if (Success)
 		{
@@ -210,6 +214,7 @@ void UMultiplayerSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSess
 			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
 			if (PlayerController)
 			{
+				// TODO: Can we just call this to implement direct connect?
 				PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 			}
 		}

@@ -116,7 +116,7 @@ void ATagPlayerCharacter::Tick(float DeltaTime)
 	ATagPlayerState* ThisPlayerState = Cast<ATagPlayerState>(GetPlayerState());
 	if (ThisPlayerState)
 	{
-		ThisPlayerState->SetPlayerName(TEXT("NewPlayerName"));
+		//ThisPlayerState->SetPlayerName(TEXT("NewPlayerName"));
 	}
 	else
 	{
