@@ -3,6 +3,7 @@
 
 #include "MyNewGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "TagPlayerState.h"
 
 AMyNewGameState::AMyNewGameState()
 {
@@ -85,4 +86,6 @@ void AMyNewGameState::Tick(float DeltaTime)
 	{
 		CurrentCooldown -= DeltaTime;
 	}
+	//FString Msg = FString::Printf(TEXT("Player Name: %s"), *PlayerArray[0]->GetPlayerName());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, Msg);
 }
